@@ -17,6 +17,7 @@
         android:title="Yêu thích" />
 
     <item
+
         android:id="@+id/nav_cart"
         android:icon="@drawable/cart"
         android:title="Giỏ hàng" />
