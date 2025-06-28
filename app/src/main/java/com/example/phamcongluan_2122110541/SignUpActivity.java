@@ -8,6 +8,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class SignUpActivity extends AppCompatActivity {
+
     EditText txtFullName, txtUsername, txtPassword, txtConfirmPassword;
     Button btnRegister;
 
@@ -23,16 +24,46 @@ public class SignUpActivity extends AppCompatActivity {
         btnRegister = findViewById(R.id.btnRegister);
 
         btnRegister.setOnClickListener(v -> {
-            String pass = txtPassword.getText().toString();
-            String confirm = txtConfirmPassword.getText().toString();
+            String fullName = txtFullName.getText().toString().trim();
+            String username = txtUsername.getText().toString().trim();
+            String password = txtPassword.getText().toString().trim();
+            String confirmPassword = txtConfirmPassword.getText().toString().trim();
 
-            if (!pass.equals(confirm)) {
-                Toast.makeText(this, "Mật khẩu không khớp", Toast.LENGTH_SHORT).show();
-            } else {
-                // Xử lý đăng ký tại đây (gửi API, lưu SQLite, v.v.)
-                Toast.makeText(this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
-                finish(); // Quay về trang trước (đăng nhập)
+            if (fullName.isEmpty()) {
+                txtFullName.setError("Vui lòng nhập họ tên");
+                txtFullName.requestFocus();
+                return;
             }
+
+            if (username.isEmpty()) {
+                txtUsername.setError("Vui lòng nhập tên tài khoản");
+                txtUsername.requestFocus();
+                return;
+            }
+
+            if (password.isEmpty()) {
+                txtPassword.setError("Vui lòng nhập mật khẩu");
+                txtPassword.requestFocus();
+                return;
+            }
+
+            if (password.length() < 6) {
+                txtPassword.setError("Mật khẩu phải có ít nhất 6 ký tự");
+                txtPassword.requestFocus();
+                return;
+            }
+
+            if (!password.equals(confirmPassword)) {
+                txtConfirmPassword.setError("Mật khẩu không khớp");
+                txtConfirmPassword.requestFocus();
+                return;
+            }
+
+            // Nếu tất cả hợp lệ
+            Toast.makeText(this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
+
+            // TODO: Gửi dữ liệu lên server hoặc lưu SQLite
+            finish(); // quay về màn hình trước (login)
         });
     }
 }

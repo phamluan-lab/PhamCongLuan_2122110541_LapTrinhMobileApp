@@ -2,4 +2,8 @@
 <resources>
     <item name="txtEmail" type="id" />
     <item name="txtPass" type="id" />
+    <item name="txtFullName" type="id" />
+    <item name="txtPassword" type="id" />
+    <item name="txtConfirmPassword" type="id" />
+    <item name="btnRegister" type="id" />
 </resources>
