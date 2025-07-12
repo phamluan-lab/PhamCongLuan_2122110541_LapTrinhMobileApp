@@ -1,74 +1,66 @@
 package com.example.phamcongluan_2122110541;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
 
 public class CartActivity extends AppCompatActivity {
 
-    private TextView tvProductName, tvProductPrice, tvQuantity, tvTotal;
-    private Button btnIncrease, btnDecrease, btnContinue, btnCheckout;
-    private int quantity = 1;
-    private int unitPrice = 7990000; // Ví dụ giá 1 sản phẩm
+    private RecyclerView recyclerView;
+    private CartAdapter cartAdapter;
+    private TextView tvTotal;
+    private Button btnCheckout, btnContinue;
+
+    private CartManager cartManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
 
-
-        // Ánh xạ view
-        tvProductName = findViewById(R.id.tvProductName);
-        tvProductPrice = findViewById(R.id.tvProductPrice);
-        tvQuantity = findViewById(R.id.tvQuantity);
+        recyclerView = findViewById(R.id.rvCart);
         tvTotal = findViewById(R.id.tvTotal);
-
-        btnIncrease = findViewById(R.id.btnIncrease);
-        btnDecrease = findViewById(R.id.btnDecrease);
-        btnContinue = findViewById(R.id.btnContinue);
         btnCheckout = findViewById(R.id.btnCheckout);
+        btnContinue = findViewById(R.id.btnContinue);
 
-        // Khởi tạo
-        updateTotal();
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        btnIncrease.setOnClickListener(v -> {
-            quantity++;
-            updateTotal();
-        });
+        // Quản lý giỏ hàng
+        cartManager = new CartManager(this);
+        List<CartItem> cartItems = cartManager.getCartItems();
 
-        btnDecrease.setOnClickListener(v -> {
-            if (quantity > 1) {
-                quantity--;
-                updateTotal();
+        // Adapter xử lý hiển thị
+        cartAdapter.setOnCartChangeListener(updatedCart -> {
+            int total = 0;
+            for (CartItem item : updatedCart) {
+                total += item.price * item.quantity;
             }
+            updateTotal(total); // ✅ Gọi đúng với int
         });
 
-        btnContinue.setOnClickListener(v -> {
-            Intent intent = new Intent(CartActivity.this, HomeActivity.class);
-            startActivity(intent);
-            finish();
-        });
+        recyclerView.setAdapter(cartAdapter);
 
+        updateTotal(cartManager.calculateTotal());
+
+        btnContinue.setOnClickListener(v -> finish()); // Quay về trang trước
         btnCheckout.setOnClickListener(v -> {
-            Intent intent = new Intent(CartActivity.this, CheckoutActivity.class);
-            startActivity(intent);
+            // TODO: xử lý thanh toán
         });
-
     }
 
-
-    private void updateTotal() {
-        tvQuantity.setText(String.valueOf(quantity));
-        int total = unitPrice * quantity;
+    // Cập nhật tổng tiền khi thay đổi
+    private void updateTotal(int total) {
         tvTotal.setText("Tổng tiền: " + formatPrice(total) + "đ");
     }
 
+    // Format tiền theo kiểu 1.000.000
     private String formatPrice(int price) {
         return String.format("%,d", price).replace(",", ".");
     }
-
 }

@@ -1,5 +1,7 @@
 package com.example.phamcongluan_2122110541;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -59,11 +61,20 @@ public class SignUpActivity extends AppCompatActivity {
                 return;
             }
 
-            // Nếu tất cả hợp lệ
+
+            SharedPreferences sharedPreferences = getSharedPreferences("user_data", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("fullname", fullName);
+            editor.putString("username", username);
+            editor.putString("password", password);
+            editor.apply();
+
             Toast.makeText(this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
 
-            // TODO: Gửi dữ liệu lên server hoặc lưu SQLite
-            finish(); // quay về màn hình trước (login)
+            // Chuyển về màn đăng nhập
+            Intent intent = new Intent(SignUpActivity.this, SignInActivity.class);
+            startActivity(intent);
+            finish();
         });
     }
 }
